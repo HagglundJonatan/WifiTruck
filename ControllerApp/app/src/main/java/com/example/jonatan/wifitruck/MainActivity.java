@@ -55,26 +55,32 @@ public class MainActivity extends AppCompatActivity
 
     public void onUpClick(View view)
     {
-        m_serverWriter.sendMessage("COMMAND UP");
-        printInGuiThread("COMMAND UP sent");
+        sendMsgToServer("COMMAND UP");
+
+    }
+
+    private void sendMsgToServer(String str)
+    {
+        if (m_serverWriter != null)
+        {
+            m_serverWriter.sendMessage(str);
+            printInGuiThread(str + " sent");
+        }
     }
 
     public void onDownClick(View view)
     {
-        m_serverWriter.sendMessage("COMMAND DOWN");
-        printInGuiThread("COMMAND DOWN sent");
+        sendMsgToServer("COMMAND DOWN");
     }
 
     public void onLeftClick(View view)
     {
-        m_serverWriter.sendMessage("COMMAND LEFT");
-        printInGuiThread("COMMAND LEFT sent");
+        sendMsgToServer("COMMAND LEFT");
     }
 
     public void onRightClick(View view)
     {
-        m_serverWriter.sendMessage("COMMAND RIGHT");
-        printInGuiThread("COMMAND RIGHT sent");
+        sendMsgToServer("COMMAND RIGHT");
     }
 
     public void handleIncomingMsgFromServer(String lineFromServer)
