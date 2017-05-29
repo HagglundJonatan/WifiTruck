@@ -1,19 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.jonatan.wifitruck.MainActivity">
+    tools:context="com.example.jonatan.wifitruck.MainActivity"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="top"
+        android:layout_weight="0">
 
-</android.support.constraint.ConstraintLayout>
+        <RelativeLayout
+            android:id="@+id/connectionTextViewsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:layout_alignParentLeft="true"
+            android:layout_weight="3">
+
+            <TextView
+                android:id="@+id/serverAddressTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Server address:"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="6dp"
+                android:textStyle="italic|bold" />
+
+            <TextView
+                android:id="@+id/serverPortTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Server port:"
+                android:layout_below="@+id/serverAddressTextView"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="6dp"
+                android:textStyle="italic|bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/editTextsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_toRightOf="@+id/connectionTextViewsLayout"
+            android:layout_toLeftOf="@+id/connectButtonLayout">
+
+            <EditText
+                android:id="@+id/serverAddressEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="192.168.100.001"
+                android:textAlignment="viewEnd"
+                android:backgroundTint="@color/colorPrimaryDark" />
+
+            <EditText
+                android:id="@+id/serverPortEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/serverAddressEditText"
+                android:text="2002"
+                android:textAlignment="viewEnd"
+                android:backgroundTint="@color/colorPrimaryDark"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/connectButtonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/connectButton"
+                android:text="CONNECT"
+                android:clickable="true"
+                android:onClick="onConnectClick"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lineSeparatorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_below="@+id/editTextsLayout">
+
+            <EditText
+                android:id="@+id/lineSeparatorEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/msgLogLayout"
+            android:layout_below="@+id/lineSeparatorLayout" >
+
+            <TextView
+                android:id="@+id/msgLogTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/msgLogLayout"
+        android:layout_weight="3">
+
+        <ImageButton
+            android:id="@+id/androidManButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/sym_def_app_icon"
+            tools:layout_editor_absoluteX="120dp"
+            tools:layout_editor_absoluteY="196dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:clickable="false"/>
+
+        <ImageButton
+            android:id="@+id/leftArrowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/androidManButton"
+            android:layout_below="@+id/upArrowButton"
+            android:background="@color/white"
+            app:srcCompat="@drawable/leftarrow100"
+            android:onClick="onLeftClick"/>
+        <ImageButton
+            android:id="@+id/rightArrowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/upArrowButton"
+            android:layout_below="@+id/upArrowButton"
+            android:background="@color/white"
+            app:srcCompat="@drawable/rightarrow100"
+            android:onClick="onRightClick"/>
+        <ImageButton
+            android:id="@+id/upArrowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/androidManButton"
+            android:layout_toRightOf="@+id/leftArrowButton"
+            android:background="@color/white"
+            app:srcCompat="@drawable/uparrow100"
+            android:layout_centerInParent="true"
+            android:onClick="onUpClick"/>
+
+        <ImageButton
+            android:id="@+id/downArrowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/leftArrowButton"
+            android:layout_toRightOf="@+id/leftArrowButton"
+            android:background="@color/white"
+            app:srcCompat="@drawable/downarrow100"
+            android:onClick="onDownClick"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>
