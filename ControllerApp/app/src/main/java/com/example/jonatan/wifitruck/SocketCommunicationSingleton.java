@@ -81,7 +81,8 @@ public class SocketCommunicationSingleton
                 {
                     String serverAddress = (serverAddressFromUser.compareTo("") == 0) ? DEFAULT_HOST : serverAddressFromUser;
                     int port = serverPortFromUser.compareTo("") != 0 ? Integer.parseInt(serverPortFromUser) : PORT;
-                    m_socket = new Socket(InetAddress.getByName(serverAddress), port);
+                    InetAddress address = InetAddress.getByName(serverAddress);
+                    m_socket = new Socket(address, port);
                     m_serverWriter = new ServerWriter(new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_socket.getOutputStream())), true), m_myMainActivity);
                     m_serverListener = new ServerListener(new BufferedReader(new InputStreamReader(m_socket.getInputStream())), m_myMainActivity);
                     m_myMainActivity.enableCommunication();

@@ -48,16 +48,22 @@ public class MainActivity extends AppCompatActivity
     public void onConnectClick(View view)
     {
         // Initialize the communication singleton
-        m_commSingleton = SocketCommunicationSingleton.getInstance();
-        m_commSingleton.setClientActivityInstance(this);
-        m_commSingleton.initialize(m_serverAddressEditText.getText().toString(), m_serverPortEditText.getText().toString());
+        if ( !m_commSingleton.isConnectedToServer() )
+        {
+            m_commSingleton = SocketCommunicationSingleton.getInstance();
+            m_commSingleton.setClientActivityInstance(this);
+            m_commSingleton.initialize(m_serverAddressEditText.getText().toString(), m_serverPortEditText.getText().toString());
+        }
+        else
+        {
+            m_commSingleton.stopCommSingletonConnectThread();
+            m_commSingleton.disconnect();
+            m_connectButton.setText("Connect");
+            m_connectButton.invalidate();
+        }
     }
 
-    public void onUpClick(View view)
-    {
-        sendMsgToServer("COMMAND UP");
 
-    }
 
     private void sendMsgToServer(String str)
     {
@@ -67,21 +73,19 @@ public class MainActivity extends AppCompatActivity
             printInGuiThread(str + " sent");
         }
     }
+    public void onUpClick(View view) { sendMsgToServer("CMD_UPP"); }
 
     public void onDownClick(View view)
     {
-        sendMsgToServer("COMMAND DOWN");
+        sendMsgToServer("E");//"CMD DWN");
     }
 
     public void onLeftClick(View view)
     {
-        sendMsgToServer("COMMAND LEFT");
+        sendMsgToServer("CMD_LFT");
     }
 
-    public void onRightClick(View view)
-    {
-        sendMsgToServer("COMMAND RIGHT");
-    }
+    public void onRightClick(View view) { sendMsgToServer("CMD RGT"); }
 
     public void handleIncomingMsgFromServer(String lineFromServer)
     {
@@ -118,7 +122,7 @@ public class MainActivity extends AppCompatActivity
     {
         String textViewText = "";
         String lines[] = m_msgLogTextView.getText().toString().split("\n");
-        if ( lines.length >= 20 )
+        if ( lines.length >= 3 )
         {
             lines[0] = "";
         }
@@ -149,7 +153,8 @@ public class MainActivity extends AppCompatActivity
             {
                 m_serverWriter = m_commSingleton.getWriter();
                 m_serverListener = m_commSingleton.getListener();
-                m_connectButton.setEnabled(false);
+                m_connectButton.setText("Disconnect");
+                m_connectButton.invalidate();
                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putString("ipAddress", m_serverAddressEditText.getText().toString());
                 editor.putString("port", m_serverPortEditText.getText().toString());

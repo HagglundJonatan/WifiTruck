@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="192.168.100.001"
+                android:text="192.168.0.6"
                 android:textAlignment="viewEnd"
                 android:backgroundTint="@color/colorPrimaryDark" />
 
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/serverAddressEditText"
-                android:text="2002"
+                android:text="2000"
                 android:textAlignment="viewEnd"
                 android:backgroundTint="@color/colorPrimaryDark"/>
 
@@ -103,24 +103,40 @@
                 android:id="@+id/lineSeparatorEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="1dp"
                 android:backgroundTint="@color/colorPrimaryDark" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:id="@+id/msgLogLayout"
             android:layout_below="@+id/lineSeparatorLayout" >
 
             <TextView
                 android:id="@+id/msgLogTextView"
+                android:text=" \n \n "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </RelativeLayout>
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/lineSeparatorLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/msgLogLayout">
 
+            <EditText
+                android:id="@+id/lineSeparatorEditText2"
+                android:layout_width="match_parent"
+                android:textSize="1dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark" />
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -135,8 +151,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/sym_def_app_icon"
-            tools:layout_editor_absoluteX="120dp"
-            tools:layout_editor_absoluteY="196dp"
             android:layout_centerInParent="true"
             android:visibility="invisible"
             android:clickable="false"/>
