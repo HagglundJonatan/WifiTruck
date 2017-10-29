@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             {
                 m_upArrowButton.setImageResource( R.drawable.uparrow100 );
                 // send release cmd
+                sendMsgToServer("CMD_RL2");
             }
         }
         else if ( id == m_downButtonId )
@@ -232,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             {
                 m_downArrowButton.setImageResource( R.drawable.downarrow100 );
                 // send release cmd
+                sendMsgToServer("CMD_RL2");
             }}
         else if ( id == m_leftButtonId )
         {
@@ -244,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             {
                 m_leftArrowButton.setImageResource( R.drawable.leftarrow100 );
                 // send release cmd
+                sendMsgToServer("CMD_RL1");
             }}
         else if ( id == m_rightButtonId )
         {
@@ -256,7 +259,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             {
                 m_rightArrowButton.setImageResource( R.drawable.rightarrow100 );
                 // send release cmd
-            }}
-
+                sendMsgToServer("CMD_RL1");
+            }
+        }
     }
 }
