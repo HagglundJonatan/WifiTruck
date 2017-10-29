@@ -163,7 +163,7 @@
             android:layout_below="@+id/upArrowButton"
             android:background="@color/white"
             app:srcCompat="@drawable/leftarrow100"
-            android:onClick="onLeftClick"/>
+            android:onClick="onLeftClick" />
         <ImageButton
             android:id="@+id/rightArrowButton"
             android:layout_width="wrap_content"

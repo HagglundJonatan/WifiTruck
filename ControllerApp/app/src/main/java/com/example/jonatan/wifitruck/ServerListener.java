@@ -30,18 +30,20 @@ public class ServerListener extends Thread
     {
         while (!m_quit)
         {
-            String lineFromServer;
+            char msgFromServer[] = new char[25];
+            int charsReceived = 0;
             try
             {
-                lineFromServer = m_fromServer.readLine();
-                if (lineFromServer == null)
+                charsReceived = m_fromServer.read(msgFromServer, 0 , 25); //eller 7!???!?!
+                if (msgFromServer == null || charsReceived == 0)
                 {
-                    //m_parentActivity.printInGuiThread("Null message received from server");
+                    //m_parentActiv>ity.printInGuiThread("Null message received from server");
                     m_quit = true;
                 }
                 else
                 {
-                    m_myMainActivity.handleIncomingMsgFromServer(lineFromServer);
+                    String strFromServer = String.copyValueOf(msgFromServer);
+                    m_myMainActivity.handleIncomingMsgFromServer(strFromServer);
                 }
             } catch (IOException e)
             {
