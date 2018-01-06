@@ -5,17 +5,21 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity implements JoyStickView.JoyStickListener
 {
     public static final String MY_PREFS_NAME = "my_shared_preferences";
-
+    private RelativeLayout m_joyStickLayout;
     private EditText m_serverAddressEditText;
     private EditText m_serverPortEditText;
     private Button m_connectButton;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ServerWriter m_serverWriter;
     private ServerListener m_serverListener;
     private SocketCommunicationSingleton m_commSingleton;
+    private JoyStickView m_joyStickView;
     private int m_upButtonId, m_downButtonId, m_leftButtonId, m_rightButtonId;
 
     @Override
@@ -36,22 +41,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        m_joyStickLayout = (RelativeLayout) findViewById( R.id.joyStickLayout );
         m_serverAddressEditText = (EditText)findViewById(R.id.serverAddressEditText);
         m_serverPortEditText = (EditText)findViewById(R.id.serverPortEditText);
         m_connectButton = (Button)findViewById(R.id.connectButton);
         m_msgLogTextView = (TextView)findViewById(R.id.msgLogTextView);
-        m_upArrowButton = (ImageButton)findViewById(R.id.upArrowButton);
+        /*m_upArrowButton = (ImageButton)findViewById(R.id.upArrowButton);
         m_downArrowButton = (ImageButton)findViewById(R.id.downArrowButton);
         m_leftArrowButton = (ImageButton)findViewById(R.id.leftArrowButton);
-        m_rightArrowButton = (ImageButton)findViewById(R.id.rightArrowButton);
-        m_upArrowButton.setOnTouchListener(this);
+        m_rightArrowButton = (ImageButton)findViewById(R.id.rightArrowButton);*/
+        m_joyStickView = new JoyStickView( this );
+        m_joyStickLayout.addView( m_joyStickView );
+                //m_joyStickView.(JoyStickView)findViewById( R.id.joyStickView );
+        /*m_upArrowButton.setOnTouchListener(this);
         m_downArrowButton.setOnTouchListener(this);
         m_leftArrowButton.setOnTouchListener(this);
-        m_rightArrowButton.setOnTouchListener(this);
-        m_upButtonId = m_upArrowButton.getId();
+        m_rightArrowButton.setOnTouchListener(this);*/
+        /*m_upButtonId = m_upArrowButton.getId();
         m_downButtonId = m_downArrowButton.getId();
         m_leftButtonId = m_leftArrowButton.getId();
-        m_rightButtonId = m_rightArrowButton.getId();
+        m_rightButtonId = m_rightArrowButton.getId();*/
 
     }
 
@@ -66,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         else
         {
-            sendMsgToServer("DSCNNCT");
+            sendMsgToServer("CMD_DSCNNCT#");
             try
             {
                 Thread.sleep(1000);
@@ -87,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         if (m_serverWriter != null)
         {
             m_serverWriter.sendMessage(str);
-            //printInGuiThread(str + " sent");
+            printInGuiThread(str + " sent");
         }
     }
-    public void onUpClick(View view)
+   /* public void onUpClick(View view)
     {
         sendMsgToServer("CMD_UPP");
     }
@@ -112,24 +121,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         sendMsgToServer("CMD_RGT");
         view.setBackgroundResource(R.drawable.rightarrowgrey100);
     }
-
+*/
     public void handleIncomingMsgFromServer(String lineFromServer)
     {
         printInGuiThread("From server: " + lineFromServer);
-        String msgArray[] = lineFromServer.split(" ");
-        switch (msgArray[1])
-        {
-            case "Connected":
-                break;
-            case "Command received - Forward":
-                break;
-            case "Command received - Backward":
-                break;
-            case "Command received - Turn left":
-                break;
-            case "Command received - Turn right":
-                break;
-        }
     }
 
     public void printInGuiThread(final String str)
@@ -189,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         });
     }
 
-    @Override
+   /* @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK)
         {
@@ -204,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 return true;
         }
         return false;
-    }
+    }*/
 
-    private void handleButtonAction(boolean bButtonPressed, int id)
+  /*  private void handleButtonAction(boolean bButtonPressed, int id)
     {
         if ( id == m_upButtonId )
         {
@@ -247,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 m_leftArrowButton.setImageResource( R.drawable.leftarrow100 );
                 // send release cmd
                 sendMsgToServer("CMD_RL1");
-            }}
+            }
+        }
         else if ( id == m_rightButtonId )
         {
             if ( bButtonPressed )
@@ -262,5 +258,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 sendMsgToServer("CMD_RL1");
             }
         }
+    }
+*/
+    @Override
+    public void onJoyStickMoved(float xPercent, float yPercent) {
+
+        Log.d( "Main activity onJoyStickMoved", "X percent: " + xPercent + " - Y percent: " + yPercent );
+        //printInGuiThread( "Main activity onJoyStickMoved X percent: " + xPercent + " - Y percent: " + yPercent );
+        sendMsgToServer("CMD_JOYX#" + String.format(Locale.ROOT, "%.1f", xPercent));
+        sendMsgToServer("CMD_JOYY#" + String.format(Locale.ROOT, "%.1f", yPercent));
     }
 }

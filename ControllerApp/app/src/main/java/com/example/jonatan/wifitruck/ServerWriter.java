@@ -33,7 +33,7 @@ public class ServerWriter extends Thread
                 {
                     m_toServer.println(msg);
                 }
-                this.sleep(1000);
+                this.sleep(200);
             }
             catch (InterruptedException e)
             {
