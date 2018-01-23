@@ -6,11 +6,9 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,17 +21,15 @@ public class MainActivity extends AppCompatActivity implements JoyStickView.JoyS
     private EditText m_serverAddressEditText;
     private EditText m_serverPortEditText;
     private Button m_connectButton;
-    private ImageButton m_upArrowButton;
-    private ImageButton m_downArrowButton;
-    private ImageButton m_leftArrowButton;
-    private ImageButton m_rightArrowButton;
     private TextView m_msgLogTextView;
 
     private ServerWriter m_serverWriter;
     private ServerListener m_serverListener;
     private SocketCommunicationSingleton m_commSingleton;
     private JoyStickView m_joyStickView;
-    private int m_upButtonId, m_downButtonId, m_leftButtonId, m_rightButtonId;
+    private float m_latestXCmd = 0.5f;
+    private float m_latestYCmd = 0.5f;
+    private long m_prevElapsedMSJoyStickCmd = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,21 +42,8 @@ public class MainActivity extends AppCompatActivity implements JoyStickView.JoyS
         m_serverPortEditText = (EditText)findViewById(R.id.serverPortEditText);
         m_connectButton = (Button)findViewById(R.id.connectButton);
         m_msgLogTextView = (TextView)findViewById(R.id.msgLogTextView);
-        /*m_upArrowButton = (ImageButton)findViewById(R.id.upArrowButton);
-        m_downArrowButton = (ImageButton)findViewById(R.id.downArrowButton);
-        m_leftArrowButton = (ImageButton)findViewById(R.id.leftArrowButton);
-        m_rightArrowButton = (ImageButton)findViewById(R.id.rightArrowButton);*/
         m_joyStickView = new JoyStickView( this );
         m_joyStickLayout.addView( m_joyStickView );
-                //m_joyStickView.(JoyStickView)findViewById( R.id.joyStickView );
-        /*m_upArrowButton.setOnTouchListener(this);
-        m_downArrowButton.setOnTouchListener(this);
-        m_leftArrowButton.setOnTouchListener(this);
-        m_rightArrowButton.setOnTouchListener(this);*/
-        /*m_upButtonId = m_upArrowButton.getId();
-        m_downButtonId = m_downArrowButton.getId();
-        m_leftButtonId = m_leftArrowButton.getId();
-        m_rightButtonId = m_rightArrowButton.getId();*/
 
     }
 
@@ -75,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements JoyStickView.JoyS
         }
         else
         {
-            sendMsgToServer("CMD_DSCNNCT#");
+            sendMsgToServer("CMD_DSCNNCT##00");
             try
             {
                 Thread.sleep(1000);
@@ -95,33 +78,11 @@ public class MainActivity extends AppCompatActivity implements JoyStickView.JoyS
     {
         if (m_serverWriter != null)
         {
-            m_serverWriter.sendMessage(str);
-            printInGuiThread(str + " sent");
+            m_serverWriter.sendMessage( str );
+            printInGuiThread( str + " sent" );
         }
     }
-   /* public void onUpClick(View view)
-    {
-        sendMsgToServer("CMD_UPP");
-    }
 
-    public void onDownClick(View view)
-    {
-        sendMsgToServer("CMD_DWN");
-        view.setBackgroundResource(R.drawable.downarrowgrey100);
-    }
-
-    public void onLeftClick(View view)
-    {
-        sendMsgToServer("CMD_LFT");
-        view.setBackgroundResource(R.drawable.leftarrowgrey100);
-    }
-
-    public void onRightClick(View view)
-    {
-        sendMsgToServer("CMD_RGT");
-        view.setBackgroundResource(R.drawable.rightarrowgrey100);
-    }
-*/
     public void handleIncomingMsgFromServer(String lineFromServer)
     {
         printInGuiThread("From server: " + lineFromServer);
@@ -184,88 +145,26 @@ public class MainActivity extends AppCompatActivity implements JoyStickView.JoyS
         });
     }
 
-   /* @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction() & MotionEvent.ACTION_MASK)
-        {
-            case MotionEvent.ACTION_DOWN :
-                // Pressed down
-                handleButtonAction(true, v.getId());
-                return true;
-            case MotionEvent.ACTION_UP :
-            case MotionEvent.ACTION_CANCEL :
-                // Released
-                handleButtonAction(false, v.getId());
-                return true;
-        }
-        return false;
-    }*/
-
-  /*  private void handleButtonAction(boolean bButtonPressed, int id)
-    {
-        if ( id == m_upButtonId )
-        {
-            if ( bButtonPressed )
-            {
-                m_upArrowButton.setImageResource( R.drawable.uparrowgrey100 );
-                sendMsgToServer("CMD_UPP");
-            }
-            else
-            {
-                m_upArrowButton.setImageResource( R.drawable.uparrow100 );
-                // send release cmd
-                sendMsgToServer("CMD_RL2");
-            }
-        }
-        else if ( id == m_downButtonId )
-        {
-            if ( bButtonPressed )
-            {
-                m_downArrowButton.setImageResource( R.drawable.downarrowgrey100 );
-                sendMsgToServer("CMD_DWN");
-            }
-            else
-            {
-                m_downArrowButton.setImageResource( R.drawable.downarrow100 );
-                // send release cmd
-                sendMsgToServer("CMD_RL2");
-            }}
-        else if ( id == m_leftButtonId )
-        {
-            if ( bButtonPressed )
-            {
-                m_leftArrowButton.setImageResource( R.drawable.leftarrowgrey100 );
-                sendMsgToServer("CMD_LFT");
-            }
-            else
-            {
-                m_leftArrowButton.setImageResource( R.drawable.leftarrow100 );
-                // send release cmd
-                sendMsgToServer("CMD_RL1");
-            }
-        }
-        else if ( id == m_rightButtonId )
-        {
-            if ( bButtonPressed )
-            {
-                m_rightArrowButton.setImageResource( R.drawable.rightarrowgrey100 );
-                sendMsgToServer("CMD_RGT");
-            }
-            else
-            {
-                m_rightArrowButton.setImageResource( R.drawable.rightarrow100 );
-                // send release cmd
-                sendMsgToServer("CMD_RL1");
-            }
-        }
-    }
-*/
     @Override
-    public void onJoyStickMoved(float xPercent, float yPercent) {
-
+    public void onJoyStickMoved(float xPercent, float yPercent)
+    {
         Log.d( "Main activity onJoyStickMoved", "X percent: " + xPercent + " - Y percent: " + yPercent );
         //printInGuiThread( "Main activity onJoyStickMoved X percent: " + xPercent + " - Y percent: " + yPercent );
-        sendMsgToServer("CMD_JOYX#" + String.format(Locale.ROOT, "%.1f", xPercent));
-        sendMsgToServer("CMD_JOYY#" + String.format(Locale.ROOT, "%.1f", yPercent));
+
+        if (xPercent == 0.5f && yPercent == 0.5f)
+        {
+            sendMsgToServer( "CMD_REL##000000" );
+        }
+        else
+        {
+            m_latestXCmd = xPercent;
+            m_latestYCmd = yPercent;
+            long currentElapsedMSJoyStickCmd = System.currentTimeMillis();
+            if ( currentElapsedMSJoyStickCmd - m_prevElapsedMSJoyStickCmd > 200 )
+            {
+                sendMsgToServer( "CMD_J#" + String.format( Locale.ROOT, "%.2f#%.2f", m_latestXCmd, m_latestYCmd ) );
+                m_prevElapsedMSJoyStickCmd = currentElapsedMSJoyStickCmd;
+            }
+        }
     }
 }

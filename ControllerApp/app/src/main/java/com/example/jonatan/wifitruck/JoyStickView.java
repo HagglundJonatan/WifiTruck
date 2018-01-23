@@ -114,26 +114,23 @@ public class JoyStickView extends SurfaceView implements  SurfaceHolder.Callback
             {
                 m_newX = event.getX();
                 m_newY = event.getY();
-                if ( Math.abs( m_newX - m_oldX ) > 40 || Math.abs( m_newY - m_oldY ) > 40)
+                m_oldX = m_newX;
+                m_oldY = m_newY;
+                // Calc the hypotenusa and if its' lower than the base radius all is fine
+                float displacement = (float) Math.sqrt( Math.pow( m_newX - m_centerX, 2 ) + Math.pow( m_newY - m_centerY, 2 ) );
+                if (displacement < m_baseRadius)
                 {
-                    m_oldX = m_newX;
-                    m_oldY = m_newY;
-                    // Calc the hypotenusa and if its' lower than the base radius all is fine
-                    float displacement = (float) Math.sqrt( Math.pow( m_newX - m_centerX, 2 ) + Math.pow( m_newY - m_centerY, 2 ) );
-                    if (displacement < m_baseRadius)
-                    {
-                        drawJoyStick( m_newX, m_newY );
-                        joyStickCallback.onJoyStickMoved( ((m_newX - m_centerX) / m_baseRadius + 1) / 2, ((m_newY - m_centerY) / m_baseRadius + 1) / 2 );
-                    }
-                    else
-                    {
-                        // Calc x and y contraints
-                        float ratio = m_baseRadius / displacement;
-                        float constrainedX = m_centerX + (m_newX - m_centerX) * ratio;
-                        float constrainedY = m_centerY + (m_newY - m_centerY) * ratio;
-                        drawJoyStick( constrainedX, constrainedY );
-                        joyStickCallback.onJoyStickMoved( ((constrainedX - m_centerX) / m_baseRadius + 1) / 2, ((constrainedY - m_centerY) / m_baseRadius + 1) / 2 );
-                    }
+                    drawJoyStick( m_newX, m_newY );
+                    joyStickCallback.onJoyStickMoved( (1 - ((m_newX - m_centerX) / m_baseRadius + 1) / 2), 1- (((m_newY - m_centerY) / m_baseRadius + 1) / 2 ));
+                }
+                else
+                {
+                    // Calc x and y contraints
+                    float ratio = m_baseRadius / displacement;
+                    float constrainedX = m_centerX + (m_newX - m_centerX) * ratio;
+                    float constrainedY = m_centerY + (m_newY - m_centerY) * ratio;
+                    drawJoyStick( constrainedX, constrainedY );
+                    joyStickCallback.onJoyStickMoved( 1 - (((constrainedX - m_centerX) / m_baseRadius + 1) / 2), 1 - ( ((constrainedY - m_centerY) / m_baseRadius + 1) / 2 ));
                 }
             }
             else
